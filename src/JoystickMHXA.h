@@ -1,5 +1,5 @@
 /*
-  Joystick.h
+  JoystickMH.h
 
   Copyright (c) 2015-2017, Matthew Heironimus
 
@@ -18,8 +18,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef JOYSTICK_h
-#define JOYSTICK_h
+#ifndef JOYSTICKMHXA_h
+#define JOYSTICKMHXA_h
 
 #include "DynamicHID/DynamicHID.h"
 
@@ -43,12 +43,10 @@
 //  Joystick (Gamepad)
 
 #define JOYSTICK_DEFAULT_REPORT_ID         0x03
-#define JOYSTICK_DEFAULT_BUTTON_COUNT        32
+#define JOYSTICK_DEFAULT_BUTTON_COUNT         8
 #define JOYSTICK_DEFAULT_AXIS_MINIMUM         0
 #define JOYSTICK_DEFAULT_AXIS_MAXIMUM      1023
-#define JOYSTICK_DEFAULT_SIMULATOR_MINIMUM    0
-#define JOYSTICK_DEFAULT_SIMULATOR_MAXIMUM 1023
-#define JOYSTICK_DEFAULT_HATSWITCH_COUNT      2
+#define JOYSTICK_DEFAULT_HATSWITCH_COUNT      0
 #define JOYSTICK_HATSWITCH_COUNT_MAXIMUM      2
 #define JOYSTICK_HATSWITCH_RELEASE           -1
 #define JOYSTICK_TYPE_JOYSTICK             0x04
@@ -66,11 +64,10 @@ private:
 	int16_t	                 _xAxisRotation;
 	int16_t	                 _yAxisRotation;
 	int16_t	                 _zAxisRotation;
-	int16_t                  _throttle;
-	int16_t                  _rudder;
-	int16_t					 _accelerator;
-	int16_t					 _brake;
-	int16_t					 _steering;
+	int16_t	                 _slider;
+	int16_t	                 _dial;
+	
+
 	int16_t	                 _hatSwitchValues[JOYSTICK_HATSWITCH_COUNT_MAXIMUM];
     uint8_t                 *_buttonValues = NULL;
 
@@ -79,8 +76,8 @@ private:
     uint8_t                  _buttonCount;
     uint8_t                  _buttonValuesArraySize = 0;
 	uint8_t					 _hatSwitchCount;
-	uint8_t					 _includeAxisFlags;
-	uint8_t					 _includeSimulatorFlags;
+	uint16_t					 _includeAxisFlags;
+	uint16_t					 _includeSimulatorFlags;
 	int16_t                  _xAxisMinimum = JOYSTICK_DEFAULT_AXIS_MINIMUM;
 	int16_t                  _xAxisMaximum = JOYSTICK_DEFAULT_AXIS_MAXIMUM;
 	int16_t                  _yAxisMinimum = JOYSTICK_DEFAULT_AXIS_MINIMUM;
@@ -93,24 +90,17 @@ private:
 	int16_t                  _ryAxisMaximum = JOYSTICK_DEFAULT_AXIS_MAXIMUM;
 	int16_t                  _rzAxisMinimum = JOYSTICK_DEFAULT_AXIS_MINIMUM;
 	int16_t                  _rzAxisMaximum = JOYSTICK_DEFAULT_AXIS_MAXIMUM;
-	int16_t                  _rudderMinimum = JOYSTICK_DEFAULT_SIMULATOR_MINIMUM;
-	int16_t                  _rudderMaximum = JOYSTICK_DEFAULT_SIMULATOR_MAXIMUM;
-	int16_t                  _throttleMinimum = JOYSTICK_DEFAULT_SIMULATOR_MINIMUM;
-	int16_t                  _throttleMaximum = JOYSTICK_DEFAULT_SIMULATOR_MAXIMUM;
-	int16_t                  _acceleratorMinimum = JOYSTICK_DEFAULT_SIMULATOR_MINIMUM;
-	int16_t                  _acceleratorMaximum = JOYSTICK_DEFAULT_SIMULATOR_MAXIMUM;
-	int16_t                  _brakeMinimum = JOYSTICK_DEFAULT_SIMULATOR_MINIMUM;
-	int16_t                  _brakeMaximum = JOYSTICK_DEFAULT_SIMULATOR_MAXIMUM;
-	int16_t                  _steeringMinimum = JOYSTICK_DEFAULT_SIMULATOR_MINIMUM;
-	int16_t                  _steeringMaximum = JOYSTICK_DEFAULT_SIMULATOR_MAXIMUM;
-
+	int16_t                  _sliderMinimum = JOYSTICK_DEFAULT_AXIS_MINIMUM;
+	int16_t                  _sliderMaximum = JOYSTICK_DEFAULT_AXIS_MAXIMUM;
+	int16_t                  _dialMinimum = JOYSTICK_DEFAULT_AXIS_MINIMUM;
+	int16_t                  _dialMaximum = JOYSTICK_DEFAULT_AXIS_MAXIMUM;
+	
 	uint8_t                  _hidReportId;
 	uint8_t                  _hidReportSize; 
 
 protected:
 	int buildAndSet16BitValue(bool includeValue, int16_t value, int16_t valueMinimum, int16_t valueMaximum, int16_t actualMinimum, int16_t actualMaximum, uint8_t dataLocation[]);
 	int buildAndSetAxisValue(bool includeAxis, int16_t axisValue, int16_t axisMinimum, int16_t axisMaximum, uint8_t dataLocation[]);
-	int buildAndSetSimulationValue(bool includeValue, int16_t value, int16_t valueMinimum, int16_t valueMaximum, uint8_t dataLocation[]);
 
 public:
 	Joystick_(
@@ -120,15 +110,13 @@ public:
 		uint8_t hatSwitchCount = JOYSTICK_DEFAULT_HATSWITCH_COUNT,
 		bool includeXAxis = true,
 		bool includeYAxis = true,
-		bool includeZAxis = true,
-		bool includeRxAxis = true,
-		bool includeRyAxis = true,
-		bool includeRzAxis = true,
-		bool includeRudder = true,
-		bool includeThrottle = true,
-		bool includeAccelerator = true,
-		bool includeBrake = true,
-		bool includeSteering = true);
+		bool includeZAxis = false,
+		bool includeRxAxis = false,
+		bool includeRyAxis = false,
+		bool includeRzAxis = false,
+		bool includeSlider = false,
+		bool includeDial = false
+		);
 
 	void begin(bool initAutoSendState = true);
 	void end();
@@ -164,32 +152,19 @@ public:
 		_rzAxisMinimum = minimum;
 		_rzAxisMaximum = maximum;
 	}
-	inline void setRudderRange(int16_t minimum, int16_t maximum)
+	inline void setSliderRange(int16_t minimum, int16_t maximum)
 	{
-		_rudderMinimum = minimum;
-		_rudderMaximum = maximum;
-	}
-	inline void setThrottleRange(int16_t minimum, int16_t maximum)
+		_sliderMinimum = minimum;
+		_sliderMaximum = maximum;
+	}	
+	inline void setDialRange(int16_t minimum, int16_t maximum)
 	{
-		_throttleMinimum = minimum;
-		_throttleMaximum = maximum;
+		_dialMinimum = minimum;
+		_dialMaximum = maximum;
 	}
-	inline void setAcceleratorRange(int16_t minimum, int16_t maximum)
-	{
-		_acceleratorMinimum = minimum;
-		_acceleratorMaximum = maximum;
-	}
-	inline void setBrakeRange(int16_t minimum, int16_t maximum)
-	{
-		_brakeMinimum = minimum;
-		_brakeMaximum = maximum;
-	}
-	inline void setSteeringRange(int16_t minimum, int16_t maximum)
-	{
-		_steeringMinimum = minimum;
-		_steeringMaximum = maximum;
-	}
+	
 
+	
 	// Set Axis Values
 	void setXAxis(int16_t value);
 	void setYAxis(int16_t value);
@@ -197,14 +172,12 @@ public:
 	void setRxAxis(int16_t value);
 	void setRyAxis(int16_t value);
 	void setRzAxis(int16_t value);
+	void setSlider(int16_t value);
+	void setDial(int16_t value);
 
 	// Set Simuation Values
-	void setRudder(int16_t value);
-	void setThrottle(int16_t value);
-	void setAccelerator(int16_t value);
-	void setBrake(int16_t value);
-	void setSteering(int16_t value);
-
+	// removed
+	
 	void setButton(uint8_t button, uint8_t value);
 	void pressButton(uint8_t button);
 	void releaseButton(uint8_t button);
@@ -215,4 +188,4 @@ public:
 };
 
 #endif // !defined(_USING_DYNAMIC_HID)
-#endif // JOYSTICK_h
+#endif // JOYSTICKMHX_h
