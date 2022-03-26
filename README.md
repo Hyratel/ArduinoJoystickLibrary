@@ -7,22 +7,19 @@ This library can be used with Arduino IDE 1.6.6 (or above) to add one or more jo
 ## Features
 
 The joystick or gamepad can have the following features:
-- Buttons (default: 32)
-- Up to 2 Hat Switches
+- Buttons (default: 8)
+- Up to 2 Hat Switches (default: 0)
 - X, Y, and/or Z Axis (up to 16-bit precision)
 - X, Y, and/or Z Axis Rotation (up to 16-bit precision)
-- Rudder (up to 16-bit precision)
-- Throttle (up to 16-bit precision)
-- Accelerator (up to 16-bit precision)
-- Brake (up to 16-bit precision)
-- Steering (up to 16-bit precision)
+- Slider (up to 16-bit precision)
+- Dial (up to 16-bit precision)
 
 ## Installation Instructions
 
 The following instructions can be used to install the latest version of the library in the Arduino IDE (thanks to [@per1234](https://github.com/per1234) for this update):
 
-1. Download https://github.com/MHeironimus/ArduinoJoystickLibrary/archive/master.zip
-2. In the Arduino IDE, select `Sketch` > `Include Library` > `Add .ZIP Library...`.  Browse to where the downloaded ZIP file is located and click `Open`. The Joystick library's examples will now appear under `File` > `Examples` > `Joystick`.
+1. Download https://github.com/Hyratel/ArduinoJoystickLibraryMHXA/archive/master.zip
+2. In the Arduino IDE, select `Sketch` > `Include Library` > `Add .ZIP Library...`.  Browse to where the downloaded ZIP file is located and click `Open`. The Joystick library's examples will now appear under `File` > `Examples` > `JoystickMHXA`.
 
 ## Examples
 
@@ -40,7 +37,7 @@ The following example Arduino sketch files are included in this library:
 ### Simple example
 
 ```C++
-#include <Joystick.h>
+#include <JoystickMHXA.h>
 
 // Create the Joystick
 Joystick_ Joystick;
@@ -86,25 +83,23 @@ Constructor used to initialize and setup the Joystick. The following optional pa
   - `JOYSTICK_TYPE_JOYSTICK` or `0x04` - Joystick 
   - `JOYSTICK_TYPE_GAMEPAD` or `0x05` - Gamepad
   - `JOYSTICK_TYPE_MULTI_AXIS` or `0x08` - Multi-axis Controller 
-- `uint8_t buttonCount` - Default: `32` - Indicates how many buttons will be available on the joystick.
-- `uint8_t hatSwitchCount` - Default: `2` - Indicates how many hat switches will be available on the joystick. Range: `0` - `2`
+- `uint8_t buttonCount` - Default: `8` - Indicates how many buttons will be available on the joystick.
+- `uint8_t hatSwitchCount` - Default: `0` - Indicates how many hat switches will be available on the joystick. Range: `0` - `2`
 - `bool includeXAxis` - Default: `true` - Indicates if the X Axis is available on the joystick.
 - `bool includeYAxis` - Default: `true` - Indicates if the Y Axis is available on the joystick.
-- `bool includeZAxis` - Default: `true` - Indicates if the Z Axis (in some situations this is the right X Axis) is available on the joystick.
-- `bool includeRxAxis` - Default: `true` - Indicates if the X Axis Rotation (in some situations this is the right Y Axis) is available on the joystick.
-- `bool includeRyAxis` - Default: `true` - Indicates if the Y Axis Rotation is available on the joystick.
-- `bool includeRzAxis` - Default: `true` - Indicates if the Z Axis Rotation is available on the joystick.
-- `bool includeRudder` - Default: `true` - Indicates if the Rudder is available on the joystick.
-- `bool includeThrottle` - Default: `true` - Indicates if the Throttle is available on the joystick.
-- `bool includeAccelerator` - Default: `true` - Indicates if the Accelerator is available on the joystick.
-- `bool includeBrake` - Default: `true` - Indicates if the Brake is available on the joystick.
-- `bool includeSteering` - Default: `true` - Indicates if the Steering is available on the joystick.
+- `bool includeZAxis` - Default: `false` - Indicates if the Z Axis (in some situations this is the right X Axis) is available on the joystick.
+- `bool includeRxAxis` - Default: `false` - Indicates if the X Axis Rotation (in some situations this is the right Y Axis) is available on the joystick.
+- `bool includeRyAxis` - Default: `false` - Indicates if the Y Axis Rotation is available on the joystick.
+- `bool includeRzAxis` - Default: `false` - Indicates if the Z Axis Rotation is available on the joystick.
+- `bool includeSlider` - Default: `false` - Indicates if the Rudder is available on the joystick.
+- `bool includeDial` - Default: `false` - Indicates if the Throttle is available on the joystick.
+
 
 The following constants define the default values for the constructor parameters listed above:
 
 - `JOYSTICK_DEFAULT_REPORT_ID` is set to `0x03`
-- `JOYSTICK_DEFAULT_BUTTON_COUNT` is set to `32`
-- `JOYSTICK_DEFAULT_HATSWITCH_COUNT` is set to `2`
+- `JOYSTICK_DEFAULT_BUTTON_COUNT` is set to `8`
+- `JOYSTICK_DEFAULT_HATSWITCH_COUNT` is set to `0`
 
 ### Joystick.begin(bool initAutoSendState)
 
@@ -162,45 +157,22 @@ Sets the range of values that will be used for the Z axis rotation. Default: `0`
 
 Sets the Z axis rotation value. See `setRzAxisRange` for the range.
 
-### Joystick.setRudderRange(int16_t minimum, int16_t maximum)
+### Joystick.setSliderRange(int16_t minimum, int16_t maximum)
 
-Sets the range of values that will be used for the Rudder. Default: `0` to `1023`
+Sets the range of values that will be used for the Slider. Default: `0` to `1023`
 
-### Joystick.setRudder(int16_t value)
+### Joystick.setSlider(int16_t value)
 
-Sets the Rudder value. See `setRudderRange` for the range.
+Sets the Rudder value. See `setSliderRange` for the range.
 
-### Joystick.setThrottleRange(int16_t minimum, int16_t maximum)
+### Joystick.setDialRange(int16_t minimum, int16_t maximum)
 
-Sets the range of values that will be used for the Throttle. Default: `0` to `1023`
+Sets the range of values that will be used for the Dial. Default: `0` to `1023`
 
-### Joystick.setThrottle(int16_t value)
+### Joystick.setDial(int16_t value)
 
-Sets the Throttle value. See `setThrottleRange` for the range.
+Sets the Rudder value. See `setDialRange` for the range.
 
-### Joystick.setAcceleratorRange(int16_t minimum, int16_t maximum)
-
-Sets the range of values that will be used for the Accelerator. Default: `0` to `1023`
-
-### Joystick.setAccelerator(int16_t value)
-
-Sets the Accelerator value. See `setAcceleratorRange` for the range.
-
-### Joystick.setBrakeRange(int16_t minimum, int16_t maximum)
-
-Sets the range of values that will be used for the Brake. Default: `0` to `1023`
-
-### Joystick.setBrake(int16_t value)
-
-Sets the Brake value. See `setBrakeRange` for the range.
-
-### Joystick.setSteeringRange(int16_t minimum, int16_t maximum)
-
-Sets the range of values that will be used for the Steering. Default: `0` to `1023`
-
-### Joystick.setSteering(int16_t value)
-
-Sets the Steering value. See `setSteeringRange` for the range.
 
 ### Joystick.setButton(uint8_t button, uint8_t value)
 
